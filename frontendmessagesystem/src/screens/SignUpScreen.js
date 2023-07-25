@@ -31,7 +31,7 @@ const SignupScreen = () => {
         }
 
         try {
-            const { data } = await axios.post('/api/signup/', {
+            const { data } = await axios.post('/api/', {
                 
                 username,
                 email,
