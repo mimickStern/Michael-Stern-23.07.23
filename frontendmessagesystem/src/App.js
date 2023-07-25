@@ -1,5 +1,5 @@
 import "./App.css";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Store } from "./Store";
 import MessagesBoxScreen from "./screens/MessagesBoxScreen";
@@ -20,6 +20,14 @@ function App() {
   const { userInfo } = state;
   const [activeTab, setActiveTab] = useState("received");
 
+  const fetchRoot = async () => {
+    try {
+        await axios.get('/api/'); 
+    } catch (err) {
+        
+    }
+};
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
@@ -29,6 +37,11 @@ function App() {
     ctxDispatch({ type: "USER_SIGNOUT" });
     window.location.href = "/signin";
   };
+
+
+  useEffect(() => {
+    fetchRoot();
+  }, []);
 
   return (
     <div className="App">

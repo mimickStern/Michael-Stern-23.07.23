@@ -17,6 +17,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def empty_view(request):
+    return Response()
 
 #Login/SignIn
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
