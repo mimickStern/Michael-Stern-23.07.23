@@ -22,7 +22,7 @@ function App() {
 
   const fetchRoot = async () => {
     try {
-        await axios.get('/api/'); 
+        await axios.get('/api'); 
     } catch (err) {
         
     }
