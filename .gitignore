@@ -35,7 +35,6 @@ local_settings.py
 dist/
 build/
 wsgi.py
-settings.py
 
 # IDE specific files
 .idea/
