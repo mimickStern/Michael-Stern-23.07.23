@@ -22,19 +22,7 @@ env/
 # Local settings
 local_settings.py
 
-# Development and deployment files
-*.pyc
-*.pyo
-*.pyd
-*.db
-*.sqlite3
-*.pyc
-*.pyo
-*.egg-info/
-*.egg
-dist/
-build/
-wsgi.py
+
 
 # IDE specific files
 .idea/
