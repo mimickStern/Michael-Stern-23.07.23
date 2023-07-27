@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 def index_view(request):
     data = {"message": "Hello, world!"}
 
-    return Response(data)
+    return JsonResponse(data)
 
 #Login/SignIn
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
