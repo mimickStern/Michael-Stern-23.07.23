@@ -42,7 +42,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 # register/signup
-@api_view(['POST'])
+@api_view(['GET','POST'])
 def signUp(request):
     user=User.objects.create_user(
         username= request.data["username"],
