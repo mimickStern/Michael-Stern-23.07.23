@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    path('', views.index_view, name='index'),
     path('signup/', views.signUp, name="signup"),
     path('received-messages/', views.getReceivedMessages, name='received'),
     path('sent-messages/', views.getSentMessages,name="sent"),
