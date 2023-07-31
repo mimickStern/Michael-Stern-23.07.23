@@ -68,7 +68,7 @@ const MessagesBoxScreen = ({ messageType }) => {
 
       const updatedMessages = messages.filter((msg) => 
       msg.id !== message.id);
-      
+
       dispatch({ type: "FETCH_SUCCESS", payload: updatedMessages });
 
       const actionText = message.unread ? "marked as read" : "marked as unread";
@@ -166,7 +166,7 @@ const MessagesBoxScreen = ({ messageType }) => {
                 <td>{message.sender}</td>
                 <td>{message.receiver}</td>
                 <td>
-                  {messageType !== "sent" && (
+                  {(messageType !== "sent" && messageType !=="received") && (
                     <Button
                       type="button"
                       variant="dark"
