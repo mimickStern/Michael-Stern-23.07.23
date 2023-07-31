@@ -66,10 +66,9 @@ const MessagesBoxScreen = ({ messageType }) => {
         headers: { Authorization: `Bearer ${userInfo.access}` },
       });
 
-      const updatedMessages = messages.map((msg) =>
-        msg.id === message.id ? { ...msg, unread: !msg.unread } : msg
-      );
-      setUnread(message.unread ? false : true);
+      const updatedMessages = messages.filter((msg) => 
+      msg.id !== message.id);
+      
       dispatch({ type: "FETCH_SUCCESS", payload: updatedMessages });
 
       const actionText = message.unread ? "marked as read" : "marked as unread";
@@ -130,7 +129,7 @@ const MessagesBoxScreen = ({ messageType }) => {
     } else {
       fetchData();
     }
-  }, [userInfo, successDelete, messageType, unread]);
+  }, [userInfo, successDelete, messageType]);
 
   return (
     <div>
