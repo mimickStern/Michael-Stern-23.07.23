@@ -22,20 +22,22 @@ const reducer = (state, action) => {
       return { ...state, error: action.payload, loading: false };
     case "DELETE_REQUEST":
       return { ...state, loadingDelete: true, successDelete: false };
-      case "DELETE_SUCCESS":
-        // After a successful delete, update the list of messages in the state
-        const updatedMessages = state.messages.filter(
-          (message) => message.id !== action.payload
-        );
+    case "DELETE_SUCCESS":
+      const updatedMessages = state.messages.filter(
+        (message) => message.id === action.payload
+      );
+      if (updatedMessages.length === 0) {
+        return { ...state, loadingDelete: false, successDelete: true };
+      } else {
         return {
           ...state,
           messages: updatedMessages,
           loadingDelete: false,
           successDelete: true,
         };
+      }
     case "DELETE_FAIL":
       return { ...state, loadingDelete: false };
-    
 
     default:
       return state;
@@ -47,6 +49,7 @@ const MessagesBoxScreen = ({ messageType }) => {
   const { userInfo } = state;
   const accessToken = userInfo ? userInfo.access : null;
   const [loadingCreate, setLoadingCreate] = useState(false);
+  const [unread, setUnread] = useState(true);
   const [{ loading, error, messages, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
       messages: [],
@@ -54,25 +57,26 @@ const MessagesBoxScreen = ({ messageType }) => {
       error: "",
     });
 
-
-
   const markReadHandler = async (message) => {
-    console.log(message);
     try {
       dispatch({ type: "FETCH_REQUEST" });
+
       const endpoint = message.unread ? "read" : "unread";
       await axios.get(`/api/${endpoint}-a-message/${message.id}/`, {
         headers: { Authorization: `Bearer ${userInfo.access}` },
       });
+
+      const updatedMessages = messages.map((msg) =>
+        msg.id === message.id ? { ...msg, unread: !msg.unread } : msg
+      );
+      setUnread(message.unread ? false : true);
+      dispatch({ type: "FETCH_SUCCESS", payload: updatedMessages });
+
       const actionText = message.unread ? "marked as read" : "marked as unread";
       toast.success(`Message ${actionText} successfully`);
-
-      dispatch({ type: "FETCH_SUCCESS" });
     } catch (err) {
       toast.error(getError(err));
-      dispatch({
-        type: "FETCH_FAIL",
-      });
+      dispatch({ type: "FETCH_FAIL" });
     }
   };
 
@@ -96,8 +100,6 @@ const MessagesBoxScreen = ({ messageType }) => {
       }
     }
   };
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,9 +130,7 @@ const MessagesBoxScreen = ({ messageType }) => {
     } else {
       fetchData();
     }
-  }, [userInfo, successDelete, messageType]);
-
-
+  }, [userInfo, successDelete, messageType, unread]);
 
   return (
     <div>
@@ -144,7 +144,7 @@ const MessagesBoxScreen = ({ messageType }) => {
         <LoadingBox></LoadingBox>
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
-      ) : messages?.length === 0 ? ( 
+      ) : messages?.length === 0 ? (
         <NoMessagesAlert />
       ) : (
         <Table striped bordered hover>
@@ -163,17 +163,19 @@ const MessagesBoxScreen = ({ messageType }) => {
               <tr key={message.id}>
                 <td>{message.subject}</td>
                 <td>{message.content}</td>
-                <td>{message.creation_date}</td>
+                <td>{message.creation_date.substring(0, 10)}</td>
                 <td>{message.sender}</td>
                 <td>{message.receiver}</td>
                 <td>
-                  <Button
-                    type="button"
-                    variant="dark"
-                    onClick={() => markReadHandler(message)}
-                  >
-                    {message.unread ? "Mark as Read" : "Mark as Unread"}
-                  </Button>
+                  {messageType !== "sent" && (
+                    <Button
+                      type="button"
+                      variant="dark"
+                      onClick={() => markReadHandler(message)}
+                    >
+                      {message.unread ? "Mark as Read" : "Mark as Unread"}
+                    </Button>
+                  )}
                   &nbsp;
                   <Button
                     type="button"
